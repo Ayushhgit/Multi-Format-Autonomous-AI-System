@@ -26,4 +26,4 @@ RUN mkdir -p samples static templates utils agents
 EXPOSE 8000
 
 # Start Redis and the application
-CMD redis-server --daemonize yes && uvicorn main:app --host 0.0.0.0 --port 8000
+CMD ["sh", "-c", "redis-server --daemonize yes && uvicorn main:app --host 0.0.0.0 --port 8000"]
