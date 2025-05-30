@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans leading-normal tracking-normal flex justify-center items-start min-h-screen py-10">
+    <div class="container mx-auto px-4 w-full max-w-5xl relative">
+        <header class="text-center mb-12 w-full">
+            <h1 class="text-5xl font-extrabold text-blue-600 mb-3">AI Agent System</h1>
+            <p class="text-xl text-gray-600">Intelligent File Processing and Routing</p>
+        </header>
+
+        <main id="mainContent" class="grid grid-cols-1 md:grid-cols-3 gap-8 transition-all duration-500 ease-in-out">
+            <!-- Upload & Controls Column (initially centered, moves left) -->
+            <section id="controlsColumn" class="md:col-span-1 space-y-8 mx-auto md:mx-0 w-full max-w-md md:max-w-none">
+                <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-700">Upload File</h2>
+                    <!-- Upload Form -->
+                    <form id="uploadForm" class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-semibold mb-2" for="file">
+                                Select File to Process
+                            </label>
+                            <div class="flex items-center justify-center w-full">
+                                <label class="file-upload-label w-full flex flex-col items-center px-4 py-6 bg-gray-100 text-blue-600 rounded-lg shadow-inner tracking-wide border-2 border-dashed border-blue-400 cursor-pointer hover:bg-blue-100 hover:border-blue-600 transition duration-200 ease-in-out">
+                                    <svg class="w-10 h-10" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+                                    </svg>
+                                    <span id="fileName" class="mt-2 text-base font-medium">Drag & Drop or Click to Upload</span>
+                                    <input type="file" id="file" class="hidden" />
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out">
+                            Process File
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Recent Traces Dropdown -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200 relative">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-700">Recent Traces</h2>
+                     <button id="tracesDropdownButton" class="w-full bg-gray-100 text-gray-700 font-semibold py-3 px-4 rounded-lg flex justify-between items-center hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out">
+                         <span>Select a Trace</span>
+                         <svg id="dropdownIcon" class="w-5 h-5 text-gray-600 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                     </button>
+                     <div id="tracesDropdownContent" class="hidden absolute z-10 mt-3 w-full bg-white rounded-md shadow-lg max-h-60 overflow-y-auto border border-gray-200">
+                         <div id="tracesList" class="py-1"></div>
+                     </div>
+                 </div>
+
+                 <!-- Error Section -->
+                 <div id="error" class="hidden p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg transition duration-200 ease-in-out"></div>
+
+                 <!-- Processing Status -->
+                 <div id="processingStatus" class="hidden flex items-center justify-center space-x-3 p-4 bg-blue-100 border border-blue-400 text-blue-700 rounded-lg transition duration-200 ease-in-out">
+                     <div class="loading-spinner border-blue-700"></div>
+                     <span class="font-semibold">Processing...</span>
+                 </div>
+
+             </section>
+
+             <!-- Results Column (initially hidden, appears on the right) -->
+             <section id="results" class="md:col-span-2 hidden bg-white rounded-xl shadow-lg p-6 border border-gray-200 transition duration-200 ease-in-out">
+                 <h2 class="text-2xl font-bold mb-6 text-gray-700">Processing Results</h2>
+                 <div id="resultContent" class="space-y-8"></div>
+             </section>
+         </main>
+
+     </div>
+
+     <script src="{{ url_for('static', path='/app.js') }}"></script>
+ </body>
+ </html> 
