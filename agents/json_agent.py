@@ -10,6 +10,7 @@ import aiohttp
 from datetime import datetime
 from typing import Dict, Any, List, Optional
 from memory_store import MemoryStore
+from utils.logger import logging
 from dotenv import load_dotenv
 import os
 
@@ -18,6 +19,7 @@ load_dotenv()
 class EnhancedJSONAgent:
 
     def __init__(self, memory_store: MemoryStore):
+        logging.info("Started processing Json")
         self.memory_store = memory_store
         self.groq_api_key = os.getenv("GROQ_API_KEY")
         self.groq_base_url = "https://api.groq.com/openai/v1/chat/completions"
@@ -212,6 +214,7 @@ Provide detailed analysis focusing on business value, risks, and actionable reco
         }
     
     async def process(self, json_content: str, trace_id: str) -> Dict[str, Any]:
+        logging.info(f"Started processing json. Trace ID: {trace_id}, Content Length: {len(json_content)}")
         """Enhanced JSON processing with Groq AI analysis"""
         self.memory_store.store_log(trace_id, {
             "stage": "enhanced_json_processing_start", 
@@ -241,6 +244,7 @@ Provide detailed analysis focusing on business value, risks, and actionable reco
             # Make enhanced decisions with AI insights
             actions = self._make_enhanced_decisions(data, json_type, anomalies, extracted_data, ai_analysis)
             
+            logging.info(f"Generated actions: {actions}")
             result = {
                 "agent_type": "enhanced_json",
                 "json_type": json_type,

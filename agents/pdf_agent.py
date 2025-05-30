@@ -7,6 +7,7 @@ import fitz  # PyMuPDF
 import re
 from datetime import datetime
 from typing import Dict, Any, List, Optional
+from utils.logger import logging
 from memory_store import MemoryStore
 from langchain_groq import ChatGroq
 from langchain.schema import HumanMessage
@@ -27,6 +28,7 @@ class PDFAgent:
         """
         Process PDF content and return structured analysis with actions
         """
+        logging.info(f"Started processing email. Trace ID: {trace_id}, Content Length: {len(pdf_content)}")
         self.memory_store.store_log(trace_id, {
             "stage": "pdf_processing_start",
             "filename": filename,
@@ -50,6 +52,7 @@ class PDFAgent:
             # Make decisions and create actions
             actions = self._make_decisions(extracted_data, doc_type, anomalies)
             
+            logging.info(f"Generated actions: {actions}")
             result = {
                 "agent_type": "pdf",
                 "document_type": doc_type,
@@ -66,6 +69,7 @@ class PDFAgent:
                 "result": result,
                 "timestamp": datetime.now().isoformat()
             })
+
             
             return result
             

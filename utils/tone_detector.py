@@ -6,12 +6,17 @@ import re
 from typing import Dict, List
 from langchain_groq import ChatGroq
 from langchain.schema import HumanMessage
+from utils.logger import logging
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class ToneDetector:
-    def __init__(self, groq_api_key: str):
+    def __init__(self):
         self.llm = ChatGroq(
-            groq_api_key=groq_api_key,
-            model_name="mixtral-8x7b-32768"
+            groq_api_key=os.getenv("GROQ_API_KEY"),
+            model_name="meta-llama/llama-4-scout-17b-16e-instruct"
         )
         
         # Define tone indicators
@@ -43,6 +48,7 @@ class ToneDetector:
     
     async def _detect_tone_llm(self, text: str) -> Dict[str, str]:
         """Use LLM to detect tone"""
+        logging.info("Tone detection started")
         prompt = f"""
         Analyze the tone of this text and classify it:
         
@@ -60,7 +66,7 @@ class ToneDetector:
         """
         
         response = await self.llm.ainvoke([HumanMessage(content=prompt)])
-        
+        logging.info("Tone detection finished")
         # Parse response
         import json
         result = json.loads(response.content)

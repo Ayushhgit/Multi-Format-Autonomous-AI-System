@@ -7,6 +7,7 @@ import os
 import json
 from datetime import datetime
 from typing import Dict, Any, Optional
+from utils.logger import logging
 
 from langchain_groq import ChatGroq
 from langchain.schema import HumanMessage, SystemMessage
@@ -40,7 +41,7 @@ class ClassifierAgent:
             
             # Determine business intent
             intent = await self._determine_intent(text_content, format_type)
-            
+            logging.info(f"Classifier Classified the format: {format_type} and intent: {intent}")
             return {
                 "format": format_type,
                 "intent": intent,
@@ -50,7 +51,6 @@ class ClassifierAgent:
             }
             
         except Exception as e:
-            # Fallback classification
             return {
                 "format": "Unknown",
                 "intent": "Unknown",
@@ -97,8 +97,6 @@ class ClassifierAgent:
             return "JSON"
         except:
             pass
-        
-        # Default to Email for text content
         return "Email"
     
     def _extract_text_content(self, content: bytes, format_type: str) -> str:
@@ -106,7 +104,6 @@ class ClassifierAgent:
         Extract text content based on format
         """
         if format_type == "PDF":
-            # For now, return placeholder - PDF agent will handle actual extraction
             return "PDF content for analysis"
         else:
             try:
@@ -205,7 +202,7 @@ Intent:"""
         """
         Calculate confidence score for the classification
         """
-        confidence = 0.5  # Base confidence
+        confidence = 0.4  # Base confidence
         
         # Increase confidence based on clear indicators
         if format_type == "PDF" and intent == "Invoice":

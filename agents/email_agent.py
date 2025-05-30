@@ -10,6 +10,7 @@ from typing import Dict, Any, List
 from langchain_groq import ChatGroq
 from langchain.schema import HumanMessage, SystemMessage
 from dotenv import load_dotenv
+from utils.logger import logging
 
 from memory_store import MemoryStore
 from utils.tone_detector import ToneDetector
@@ -20,7 +21,7 @@ class EmailAgent:
     def __init__(self, memory_store: MemoryStore):
         self.memory_store = memory_store
         self.groq_api_key = os.getenv("GROQ_API_KEY")
-        self.tone_detector = ToneDetector(groq_api_key=self.groq_api_key) if self.groq_api_key else None
+        self.tone_detector = ToneDetector() if self.groq_api_key else None
         
         if self.groq_api_key:
             self.llm = ChatGroq(
@@ -36,6 +37,7 @@ class EmailAgent:
         """
         Process email content and return structured data with actions
         """
+        logging.info(f"Started processing email. Trace ID: {trace_id}, Content Length: {len(email_content)}")
         self.memory_store.store_log(trace_id, {
             "stage": "email_processing_start",
             "content_length": len(email_content),
@@ -57,6 +59,8 @@ class EmailAgent:
             # Make decisions and create actions
             actions = self._make_decisions(email_data)
             
+            logging.info(f"Email Agent data {email_data}, action: {actions}")
+
             result = {
                 "agent_type": "email",
                 "extracted_data": email_data,
