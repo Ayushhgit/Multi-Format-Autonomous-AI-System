@@ -25,7 +25,6 @@ class ActionRouter:
             "finance_alert": "https://api.example-finance.com"
         }
         
-        # For demo purposes, we'll simulate these endpoints
         self.simulate_apis = True
         
         self.available_actions = self._load_available_actions()
@@ -61,11 +60,11 @@ class ActionRouter:
             if not action_type:
                 raise ValueError("Action type not specified")
             
-            if action_type not in self.available_actions:
+            if action_type not in self.available_actions and not self.simulate_apis:
                 raise ValueError(f"Unsupported action type: {action_type}")
             
-            # Execute the action
-            result = await self.available_actions[action_type](action.get("params", {}), trace_id)
+            # Use the retry mechanism to execute the action via API call
+            result = await self._execute_with_retry(action, trace_id, action_id)
             
             self.memory_store.store_log(trace_id, {
                 "stage": "action_success",
@@ -210,7 +209,7 @@ class ActionRouter:
         
         # Simulate occasional failures for demo
         import random
-        if random.random() < 0.2:  # 20% failure rate for demo
+        if random.random() < 0.2: 
             raise aiohttp.ClientError("Simulated API failure")
         
         # Return simulated responses

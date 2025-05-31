@@ -229,7 +229,6 @@ tracesDropdownButton.addEventListener('click', () => {
     }
 });
 
-// Close dropdown when clicking outside
 document.addEventListener('click', (event) => {
     if (!tracesDropdownButton.contains(event.target) && !tracesDropdownContent.contains(event.target)) {
         tracesDropdownContent.classList.add('hidden');
