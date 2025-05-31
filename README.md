@@ -16,6 +16,33 @@ The system follows a modular, agent-based architecture orchestrated by a central
 5.  **Action Execution:** The `ActionRouter` receives the recommended actions from the format agent and executes them. This involves potentially calling external APIs (simulated or real) with retry logic.
 6.  **Memory and Logging:** The `MemoryStore` is used throughout the process to store traces and logs for each uploaded file and subsequent actions, providing visibility into the processing flow.
 
+## Agent Flow and Chaining
+
+The processing of an uploaded file follows a specific chain of agents and components:
+
+1.  **File Upload (`main.py`):** A file is uploaded to the `/upload` endpoint. A unique `trace_id` is generated for tracking.
+2.  **Classification (`ClassifierAgent`):** The raw file content, filename, and content type are passed to the `ClassifierAgent`.
+    *   It determines the `format` (Email, JSON, PDF, etc.) and `intent` (RFQ, Complaint, etc.).
+    *   The classification result is logged in the `MemoryStore`.
+3.  **Routing to Format Agent (`main.py`):** Based on the `format` determined by the `ClassifierAgent`, the `main.py` application routes the raw or decoded content to the appropriate agent:
+    *   If `format` is "Email", `EmailAgent.process` is called with the decoded text content.
+    *   If `format` is "JSON", `EnhancedJSONAgent.process` is called with the decoded text content.
+    *   If `format` is "PDF", `PDFAgent.process` is called with the raw bytes content.
+    *   If the format is unsupported, an error is returned.
+4.  **Format Agent Processing (e.g., `EmailAgent`):** The selected format agent processes the content.
+    *   It performs format-specific data extraction and analysis (e.g., calling `ToneDetector.analyze_tone` in the case of the `EmailAgent`).
+    *   It generates a list of proposed `actions` based on its analysis.
+    *   The agent's processing result and generated actions are logged in the `MemoryStore`.
+    *   The agent returns its results, including the `actions` list, back to `main.py`.
+5.  **Action Execution (`ActionRouter`):** The `main.py` application passes the list of `actions` received from the format agent to the `ActionRouter`.
+    *   The `ActionRouter.execute_action` method is called for each action in the list.
+    *   `execute_action` uses `_execute_with_retry` to handle the action execution, which involves simulating or making real API calls based on the action type and endpoint.
+    *   The result and status (success/failed) of each action execution are logged in the `MemoryStore`.
+    *   The results of the actions are collected.
+6.  **Final Response (`main.py`):** The `main.py` application compiles the initial classification, the output from the format agent, and the results of the executed actions into a final response, which is returned to the user interface. All steps and results are persisted in the `MemoryStore` for later review (e.g., on the `/traces` page).
+
+This flow illustrates the sequential processing pipeline, where the output of one stage (classification) determines the next stage (routing to a format agent), and the output of the format agent (actions) drives the final stage (action execution). The `MemoryStore` acts as a central point for logging and tracing the entire process.
+
 ## Agent Logic
 
 Each agent has a specific role and internal logic:
