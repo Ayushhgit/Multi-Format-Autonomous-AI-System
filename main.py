@@ -15,26 +15,22 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
-from classifier_agent import ClassifierAgent
+from mcp.classifier_agent import ClassifierAgent
 from memory_store import MemoryStore
 from router import ActionRouter
 from agents.email_agent import EmailAgent
 from agents.json_agent import EnhancedJSONAgent
 from agents.pdf_agent import PDFAgent
 
-# Initialize FastAPI app
-app = FastAPI(title="Multi-Agent System", version="1.0.0")
+app = FastAPI(title="Multi-Agent System")
 
-# Mount static files and templates
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-# Initialize components
 memory_store = MemoryStore()
 classifier = ClassifierAgent()
 router = ActionRouter(memory_store)
 
-# Initialize agents
 email_agent = EmailAgent(memory_store)
 json_agent = EnhancedJSONAgent(memory_store)
 pdf_agent = PDFAgent(memory_store)
@@ -59,14 +55,11 @@ async def upload_file(file: UploadFile = File(...)):
     Main upload endpoint that processes files through the multi-agent system
     """
     try:
-        # Generate unique trace ID
         trace_id = str(uuid.uuid4())
         timestamp = datetime.now().isoformat()
-        
-        # Read file content
+
         content = await file.read()
         
-        # Store initial upload info
         memory_store.store_log(trace_id, {
             "stage": "upload",
             "filename": file.filename,
@@ -142,7 +135,7 @@ async def upload_file(file: UploadFile = File(...)):
 @app.get("/trace/{trace_id}")
 async def get_trace(trace_id: str):
     """
-    Get the complete trace for a processing run
+    Track a process using trace id 
     """
     try:
         trace_data = memory_store.get_trace(trace_id)
