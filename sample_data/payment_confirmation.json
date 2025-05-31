@@ -1,0 +1,4 @@
+{
+  "input": "Your payment of $3,200 has been received successfully. Thank you.",
+  "intent": "Payment_confirmation"
+}

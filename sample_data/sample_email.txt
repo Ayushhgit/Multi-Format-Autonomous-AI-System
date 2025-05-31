@@ -1,0 +1,12 @@
+From: john.doe@example.com
+To: support@example.com
+Subject: Repeated login issues with dashboard access
+
+Hi Support Team,
+
+I hope this message finds you well. I’ve been facing login problems for the past 3 days. Every time I try to access the dashboard, I get an error message saying “Access Denied”.
+
+This is affecting my ability to generate reports for our clients. Please look into this as soon as possible.
+
+Thanks,
+John Doe
