@@ -81,7 +81,7 @@ class ClassifierAgent:
             except:
                 pass
         
-        # Email detection (looking for email headers or @ symbols)
+        # Email detection 
         try:
             text = content.decode('utf-8')
             if ('From:' in text and 'To:' in text) or \

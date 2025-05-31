@@ -37,7 +37,7 @@ class ToneDetector:
             "time sensitive", "deadline", "rush", "priority", "soon as possible"
         ]
     
-    async def detect_tone(self, text: str) -> Dict[str, str]:
+    async def analyze_tone(self, text: str) -> Dict[str, str]:
         """Detect tone using LLM with fallback to rule-based"""
         try:
             # Try LLM-based detection first

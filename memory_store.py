@@ -152,7 +152,7 @@ class MemoryStore:
                 if log_entry.get("stage") == "completion":
                     return log_entry.get("result")
                     
-            return None # No completion log found
+            return None
             
         except Exception as e:
             print(f"Redis get error: {e}")
@@ -171,7 +171,6 @@ class MemoryStore:
             if not row:
                 return None
             
-            # Return the result data from the completion log
             completion_data = json.loads(row['data'])
             return completion_data.get('result')
     
@@ -235,7 +234,6 @@ class MemoryStore:
     def clear_old_traces(self, days: int = 7):
         """Clear traces older than specified days"""
         if self.use_redis:
-            # Redis handles expiration automatically
             pass
         else:
             with self._get_db_connection() as conn:

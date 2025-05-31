@@ -193,7 +193,7 @@ class EmailAgent:
         if self.llm:
             return await self._llm_analyze_tone(email_content)
         else:
-            return self.tone_detector.analyze_tone(email_content)
+            return await self.tone_detector.analyze_tone(email_content)
     
     async def _llm_analyze_tone(self, email_content: str) -> Dict[str, Any]:
         """
@@ -229,11 +229,11 @@ Respond in JSON format: {"tone": "category", "intensity": number, "confidence": 
                 }
             except:
                 # Fallback to rule-based if JSON parsing fails
-                return self.tone_detector.analyze_tone(email_content)
+                return await self.tone_detector.analyze_tone(email_content)
                 
         except Exception as e:
             print(f"LLM tone analysis failed: {e}")
-            return self.tone_detector.analyze_tone(email_content)
+            return await self.tone_detector.analyze_tone(email_content)
     
     def _determine_urgency(self, email_content: str, email_data: Dict[str, Any]) -> str:
         """
